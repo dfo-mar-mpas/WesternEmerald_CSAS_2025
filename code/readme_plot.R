@@ -41,6 +41,8 @@ basemap <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
                    st_as_sf()%>%
                    mutate(country="USA"))
 
+buffer_poly <- read_sf("data/WEBCA_10k_85k.shp")%>%st_transform(CanProj)
+
 #set up plot limits
 plot_lims <- bioregion%>%
   st_bbox()%>% #get the bounding box
@@ -56,6 +58,7 @@ p1 <- ggplot()+
   geom_sf(data=basemap)+
   geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
   geom_sf(data=network)+
+  geom_sf(data=buffer_poly,fill=NA,lty=2)+
   geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill="coral2")+
   coord_sf(expand=0,xlim=plot_lims[c(1,3)],ylim=plot_lims[c(2,4)])+
   theme_bw();p1
