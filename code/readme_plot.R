@@ -63,5 +63,6 @@ p1 <- ggplot()+
   coord_sf(expand=0,xlim=plot_lims[c(1,3)],ylim=plot_lims[c(2,4)])+
   theme_bw();p1
 
+#save outputs and use the Knitr function to trim the edges
 ggsave("output/readmeplot.png",p1,width=3.5,height=4.5,units="in",dpi=300) #there is some guess work with the height and width ratio. I am not sure of the best way to do it. 
 knitr::plot_crop("output/readmeplot.png")  
