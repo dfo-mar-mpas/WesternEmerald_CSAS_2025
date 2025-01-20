@@ -22,20 +22,39 @@ load("data/edna_taxonomy.RData")
 #Bar plots - the prettier venn diagrams
 
 #trim the RV data to just those species detected in the paired samples
+# rv_comp_direct <- rv_formatted%>%
+#                   data.frame()%>%
+#                   filter(MISSION == gsub("-","",unique(edna_data$cruise)),
+#                          SETNO %in% unique(edna_data$setno))%>%
+#                   distinct(aphiaID,.keep_all=TRUE)%>%
+#                   rename(species_filter = latin)%>%
+#                   dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+#                   mutate(method='rv')%>%
+#                   rbind(.,edna_data%>%
+#                           data.frame()%>%
+#                           distinct(aphiaID,.keep_all=TRUE)%>%
+#                           rename(species_filter = latin)%>%
+#                           dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+#                           mutate(method='edna'))
+                  
+#filter out just the species               
 rv_comp_direct <- rv_formatted%>%
                   data.frame()%>%
                   filter(MISSION == gsub("-","",unique(edna_data$cruise)),
                          SETNO %in% unique(edna_data$setno))%>%
                   distinct(aphiaID,.keep_all=TRUE)%>%
+                  filter(!is.na(Species))%>%
                   rename(species_filter = latin)%>%
                   dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
                   mutate(method='rv')%>%
                   rbind(.,edna_data%>%
                           data.frame()%>%
                           distinct(aphiaID,.keep_all=TRUE)%>%
+                          filter(!is.na(Species))%>%
                           rename(species_filter = latin)%>%
                           dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
                           mutate(method='edna'))
+                  
 
 bar_direct <- rv_comp_direct%>%
               group_by(aphiaID)%>%
@@ -73,16 +92,18 @@ rv_comp_survey <- rv_formatted%>%
 #comparison of rv data to all the surveys near WEBMR since 1970
 rv_comp_all <- rv_formatted%>%
                data.frame()%>%
-                distinct(aphiaID,.keep_all=TRUE)%>%
-                rename(species_filter = latin)%>%
-                dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
-                mutate(method='rv')%>%
-                rbind(.,edna_data%>%
-                        data.frame()%>%
-                        distinct(aphiaID,.keep_all=TRUE)%>%
-                        rename(species_filter = latin)%>%
-                        dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
-                        mutate(method='edna'))
+               distinct(aphiaID,.keep_all=TRUE)%>%
+               filter(!is.na(Species))%>%
+               rename(species_filter = latin)%>%
+               dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+               mutate(method='rv')%>%
+               rbind(.,edna_data%>%
+                       data.frame()%>%
+                       distinct(aphiaID,.keep_all=TRUE)%>%
+                       filter(!is.na(Species))%>%
+                       rename(species_filter = latin)%>%
+                       dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+                       mutate(method='edna'))
 
 bar_all <- rv_comp_all%>%
             group_by(aphiaID)%>%
@@ -102,6 +123,13 @@ bar_all <- rv_comp_all%>%
 bar_plot_all <- venn_bar(bar_all)
 
 ggsave("output/bar_plot_all.png",bar_plot_all,height=5,width=7,units="in",dpi=300)
+
+#doesn't render well (titles can't be aligned vertically with the legend). Will use Illustrator instead
+# bar_combo <- (bar_plot_direct + labs(title = "2020 paired RV-eDNA comparison")) + 
+#              (bar_plot_all + labs(title = "1970-2024 RV-eDNA comparison") + theme(legend.position="none"))+
+#               plot_layout(nrow=2)
+# 
+# ggsave("output/bar_combo.png",bar_combo,height=8,width=7,units = "in",dpi=300)
 
 #Species accumulation curve comparisons 
 
@@ -136,6 +164,17 @@ rv_species_df <- rv_formatted%>%
                   ) %>%
                   column_to_rownames(var = "stations")
 
+rv_species_df_all <- rv_formatted%>%
+                    data.frame()%>%
+                    mutate(stations = paste(MISSION,SETNO,sep="-"))%>%
+                    dplyr::select(stations,latin,std_wgt)%>%
+                    pivot_wider(
+                      names_from = latin,           # Species names become columns
+                      values_from = std_wgt,        # Biomass fills the values
+                      values_fill = 0               # Fill missing values with 0
+                    ) %>%
+                    column_to_rownames(var = "stations")
+
 #get the data for plotting 
 edna_specpool <- species_pool_estimate(edna_species_df)
 edna_plot_data <- (edna_specpool$plot_data)%>%mutate(method="eDNA")
@@ -145,13 +184,33 @@ rv_specpool <- species_pool_estimate(rv_species_df)
 rv_plot_data <- (rv_specpool$plot_data)%>%mutate(method="RV survey")
 rv_accum_data <- (rv_specpool$accum_data)%>%mutate(method="RV survey")
 
+rv_specpool_all <- species_pool_estimate(rv_species_df_all)
+rv_plot_data_all <- (rv_specpool_all$plot_data)%>%mutate(method="RV survey")
+rv_accum_data_all <- (rv_specpool_all$accum_data)%>%mutate(method="RV survey")
+
 plot_data <- rbind(edna_plot_data,rv_plot_data)
 accum_data <- rbind(edna_accum_data,rv_accum_data)
+
+plot_data_comp <- plot_data%>%
+                  mutate(method=gsub("RV survey","Paired 2020 survey",method))%>%
+                  rbind(.,rv_plot_data_all)%>%
+                  mutate(method=factor(method,levels=c("RV survey","Paired 2020 survey","eDNA")))
+
+accum_data_comp <- accum_data%>%
+                   mutate(method=gsub("RV survey","Paired 2020 survey",method))%>%
+                   rbind(.,rv_accum_data_all)%>%
+                   mutate(method=factor(method,levels=c("RV survey","Paired 2020 survey","eDNA")))
 
 y_intercepts <- plot_data%>%
                 group_by(method)%>%
                 summarise(y_intercept = unique(asymptote))%>%
                 ungroup()
+
+y_intercepts_all <- plot_data_comp%>%
+                    group_by(method)%>%
+                    summarise(y_intercept = unique(asymptote))%>%
+                    ungroup()%>%
+                    mutate(method=factor(method,levels=c("RV survey","Paired 2020 survey","eDNA")))
 
 
 p1 <- ggplot(plot_data, aes(x = Sites)) +
@@ -174,5 +233,39 @@ p1 <- ggplot(plot_data, aes(x = Sites)) +
 
 ggsave("output/speccum_plots.png",p1,height=5,width=5,units="in",dpi=300)
 
+p2 <- ggplot(rv_plot_data_all, aes(x = Sites)) +
+  geom_line(aes(y = Fitted, color = Observed), linetype="dotted",size = 1) +  # Fitted curve
+  geom_line(data=rv_plot_data_all%>%filter(Observed == "Observed"),aes(y = Fitted, color = Observed),size=1)+
+  geom_ribbon(aes(ymin = Lower, ymax = Upper), alpha = 0.2, fill = "red") +  # Error bounds
+  scale_color_manual(values = c("Observed" = "blue", "Extrapolated" = "red")) +
+  labs(
+    x = "Number of Sites",
+    y = "Species Richness",
+    color = ""
+  ) +
+  theme_bw() +
+  geom_hline(yintercept = unique(rv_plot_data_all$asymptote),colour="black", linetype = "longdash") +
+  theme(strip.background = element_rect(fill="white"),
+        legend.position = "none")
 
+ggsave("output/speccum_plots_all.png",p2,height=5,width=5,units="in",dpi=300)
 
+p3 <- ggplot(plot_data_comp, aes(x = Sites)) +
+  geom_line(aes(y = Fitted, color = Observed), linetype="dotted",size = 1) +  # Fitted curve
+  geom_line(data=plot_data_comp%>%filter(Observed == "Observed"),aes(y = Fitted, color = Observed),size=1)+
+  geom_point(data = accum_data_comp%>%filter(method !="RV survey"), aes(y = Richness), shape=21,fill = "cornflowerblue", size = 2.5) +  # Observed richness
+  geom_ribbon(aes(ymin = Lower, ymax = Upper), alpha = 0.2, fill = "red") +  # Error bounds
+  scale_color_manual(values = c("Observed" = "blue", "Extrapolated" = "red")) +
+  labs(
+    x = "Number of Sites",
+    y = "Species Richness",
+    color = ""
+  ) +
+  theme_bw() +
+  facet_wrap(~method,ncol=3,scales="free_x")+
+  geom_hline(data = y_intercepts_all, aes(yintercept = y_intercept),colour="black", linetype = "longdash") +
+  #geom_hline(data = y_intercepts_all%>%mutate(method=rev(method)), aes(yintercept = y_intercept),colour="grey75", linetype = "longdash")+
+  theme(strip.background = element_rect(fill="white"),
+        legend.position = "none")
+
+ggsave("output/speccum_plots_all.png",p3,height=5,width=5,units="in",dpi=300)
