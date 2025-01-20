@@ -10,9 +10,6 @@ library(taxize)
 library(worrms)
 library(MarConsNetData)
 
-#load functions -----------
-source("code/ClassifyFunction.R")
-
 #Load projections
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
 utm <- "+proj=utm +zone=19N +datum=WGS84 +units=m +no_defs"
@@ -73,9 +70,7 @@ basemap_atlantic <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
                             st_union()%>%
                             st_transform(latlong)%>%
                             st_as_sf()%>%
-                            mutate(country="USA"))%>%
-  st_intersection(.,bioregion_box)
-
+                            mutate(country="USA"))
 #Get RV data
 # rvopen <- data_MarRV_survey_open()
 # 
@@ -130,14 +125,15 @@ basemap_atlantic <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
 #save(rvdata,file="data/rvdata.RData")\
 #save(GSCAT,GSINF,GSMISSIONS,GSSPECIES,file="data/RVSurveyPull.RData")
 
-load("data/rvdata.RData") #only need to run the above commmented code once. 
+load("data/rvdata.RData") #only need to run the above commented code once. 
 load("data/RVSurveyPull.RData")
 
 rv_stations <- GSINF %>%
               mutate(date = as.POSIXct(SDATE), year = year(date), decade = paste0(floor(year / 10) * 10, "'s")) %>%
               st_as_sf(coords = c("MLONG", "MLAT"), crs = latlong) %>%
               st_join(., maritimes_network%>%rbind(webca_buffer), join = st_intersects)%>%
-              filter(name %in% c("webca_buffer","Western/Emerald Banks Marine Refuge"))%>%
+              filter(name %in% c("webca_buffer","Western/Emerald Banks Marine Refuge")|MISSION == "NED2020025" & SETNO==13)%>% #this keeps data for one of the comparison datasets
+              #filter(name %in% c("webca_buffer","Western/Emerald Banks Marine Refuge"))%>%
               mutate(id=paste(MISSION,SETNO,sep="-"))
 
 rv_df <- rvdata%>%
@@ -159,7 +155,7 @@ webca_species_buffer <- rv_df%>%
                         data.frame()%>%
                         pull(SCI_NAME)%>%
                         unique()%>%
-                        setdiff(.,webca_species)%>% #the additional species
+                        setdiff(.,webca_species_rv$name)%>% #the additional species
                         data.frame()%>%
                         rename(name=1)%>%
                         mutate(type="buffer")
@@ -200,6 +196,7 @@ id_names <-webca_species%>%
                       latin != "UNIDENTIFIED", #remove
                       latin != "ASCOPHYLLUM NODOSUM", #remove - seaweed would just be captured on the upcast since the depths are much deeper than any marine algae/plants would be expected from
                       latin !="STONES AND ROCKS", #remove
+                      latin !="FUCUS",
                       latin !="PURSE LITTLE SKATE")%>%#this is an egg case (purse)
                 mutate(latin = tolower(latin))
 
