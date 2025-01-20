@@ -1,4 +1,4 @@
-venn_bar <- function(bar_data){
+venn_bar <- function(bar_data,title=""){
   
   #plotting function mirrored on Trask et al. analysis of eDNA in coastal inverts
   
@@ -69,7 +69,8 @@ venn_bar <- function(bar_data){
           rbind(.,df3)%>%
           mutate(Phylum = factor(Phylum,levels=c(levels(df2$Phylum),"All")),
                  Status = gsub(" only","",Status),
-                 Status = factor(Status,levels=c("Traditional","Shared","eDNA")),
+                 Status = gsub("Traditional","RV",Status),
+                 Status = factor(Status,levels=c("RV","Shared","eDNA")),
                  group = ifelse(Phylum == "All","All","Phyla"),
                  group = factor(group,levels=c("Phyla","All")))
   
@@ -84,12 +85,14 @@ venn_bar <- function(bar_data){
   plot_phyla <- ggplot(df_phyla, aes(x = Phylum, y = Proportion, fill = Status)) +
                 geom_bar(stat = "identity", position = "fill", col = "black") +
                 geom_text(aes(label = Count), position = position_stack(vjust = 0.5), size = 4, fontface = 2) +
-                labs(x = "", y = "Proportion", fill = "") +
+                labs(x = "", y = "Proportion", fill = "",title=title) +
                 theme_bw() +
                 theme(axis.text.x = element_text(angle = 45, hjust = 1),
                       legend.position = "top",
                       legend.justification = "right",
-                      legend.direction = "horizontal") +
+                      legend.direction = "horizontal",
+                      plot.title = element_text(hjust = 0), # Left-align the title
+                      plot.title.position = "plot" ) +
                 scale_y_continuous(expand = c(0.02, 0), labels = scales::percent) +
                 scale_fill_manual(values = palette_cust)
   
