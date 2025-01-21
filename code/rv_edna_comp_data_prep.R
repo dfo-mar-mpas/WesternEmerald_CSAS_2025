@@ -364,7 +364,7 @@ edna_species_df_other <- read.csv("data/2020eDNA_COI12S16S_FinalTaxaTable.csv")%
                           mutate(otu_count = sum(c_across(starts_with("EDNA"))))%>%
                           data.frame()%>%
                           filter(otu_count>0)%>%
-                          gather(key="station","count",2:8)%>%
+                          gather(key="station","count",starts_with("EDNA"))%>%
                           mutate(latin=gsub(" g\\.$","",OTU_ID),
                                  latin=gsub(" cf.","",latin),
                                  latin=gsub(" f\\.$","",latin))
