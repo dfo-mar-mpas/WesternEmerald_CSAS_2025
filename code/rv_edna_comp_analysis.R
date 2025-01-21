@@ -13,6 +13,35 @@ library(ggnewscale)
 source("code/venn_bar.R")
 source("code/species_pool_estimate.R")
 
+common_name <- function(x) {
+  
+  require(worrms)
+  
+  # Attempt to get common name records
+  cn <- tryCatch(
+    wm_common_id(x),
+    error = function(e) NULL  # Return NULL if there's an error
+  )
+  
+  # Check if there are any records
+  if (is.null(cn) || nrow(cn) == 0) {
+    return(NA)  # Return NA if no records
+  }
+  
+  # Filter for English language and format the common name
+  common <- cn %>%
+    filter(language == "English") %>%
+    pull(vernacular) %>%
+    sub("^(\\w)(\\w*)", "\\U\\1\\L\\2", ., perl = TRUE)
+  
+  # Return the first common name, or NA if none match the filter
+  if (length(common) > 1) {
+    return(common[1])
+  } else {
+    return(common)
+  }
+}
+
 #for plotting and data collation 
 PhyloNames <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
 
@@ -22,21 +51,20 @@ load("data/edna_taxonomy.RData")
 
 #Bar plots - the prettier venn diagrams
 
-#trim the RV data to just those species detected in the paired samples
-# rv_comp_direct <- rv_formatted%>%
-#                   data.frame()%>%
-#                   filter(MISSION == gsub("-","",unique(edna_data$cruise)),
-#                          SETNO %in% unique(edna_data$setno))%>%
-#                   distinct(aphiaID,.keep_all=TRUE)%>%
-#                   rename(species_filter = latin)%>%
-#                   dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
-#                   mutate(method='rv')%>%
-#                   rbind(.,edna_data%>%
-#                           data.frame()%>%
-#                           distinct(aphiaID,.keep_all=TRUE)%>%
-#                           rename(species_filter = latin)%>%
-#                           dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
-#                           mutate(method='edna'))
+#there is a mismatch for yellowtail flounder with some records in the rv_formatted with the Species name (Limanda ferruginea) instead of the the now accepted myzopsetta ferruginea
+
+edna_data <- data.frame(edna_data)
+
+rows_to_update <- which(edna_data$Species == "Limanda ferruginea")
+
+edna_data[rows_to_update,c("latin",PhyloNames,"aphiaID")] <- rv_formatted%>%
+                                                             data.frame()%>%
+                                                             filter(latin=="myzopsetta ferruginea")%>%dplyr::select(latin,all_of(PhyloNames),aphiaID)%>%
+                                                             slice(1)%>%as.vector()
+
+edna_data[rows_to_update,"OTU_ID"] <- "Myzopsetta ferruginea"
+
+
                   
 #filter out just the species               
 rv_comp_direct <- rv_formatted%>%
@@ -324,6 +352,148 @@ ggsave("output/speccum_plots_all.png",p2,height=5,width=5,units="in",dpi=300)
           legend.position = "none")
 
 ggsave("output/speccum_plots_all.png",p3,height=5,width=7,units="in",dpi=300)
+
+
+##create the summary table with all 90 species detected
+
+PhyloNames <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+
+rv_data_table <- rv_formatted%>%
+                 data.frame()%>%
+                 filter(MISSION == gsub("-","",unique(edna_data$cruise)),
+                         SETNO %in% unique(edna_data$setno),
+                        !is.na(Species))%>%
+                 distinct(latin,.keep_all=TRUE)%>%
+                 dplyr::select(all_of(PhyloNames),aphiaID)
+
+edna_data_table <- edna_data%>%
+                   distinct(latin,.keep_all = TRUE)%>%
+                   dplyr::select(all_of(PhyloNames),aphiaID)
+
+species_table <- rv_data_table%>%
+                 filter(aphiaID %in% setdiff(rv_data_table$aphiaID,edna_data_table$aphiaID))%>%
+                 mutate(type = "RV")%>%
+                 rbind(.,
+                       rv_data_table%>%
+                         filter(aphiaID %in% intersect(rv_data_table$aphiaID,edna_data_table$aphiaID))%>%
+                         mutate(type = "Shared")
+                       )%>%
+                 rbind(.,
+                       edna_data_table%>%
+                         filter(aphiaID %in% setdiff(edna_data_table$aphiaID,rv_data_table$aphiaID))%>%
+                         mutate(type = "eDNA"))%>%
+                 mutate(type=factor(type,levels=c("RV","Shared","eDNA")))%>%
+                 arrange(type,Phylum,Class,Order,Family,Genus,Species)
+
+write.csv(species_table,"output/comparison_species_table.csv",row.names=FALSE)
+
+#common WEBCA species
+
+grouped_data <- edna_data%>%
+                data.frame()%>%
+                filter(!is.na(Species))%>%
+                dplyr::select(all_of(PhyloNames),aphiaID,latin)%>%
+                rbind(.,
+                rv_formatted%>%
+                  data.frame()%>%
+                  filter(!is.na(Species))%>%
+                  dplyr::select(all_of(PhyloNames),aphiaID,latin)
+                )%>%
+                distinct(latin,.keep_all = TRUE)
+                
+sets_per_year <- rv_formatted %>%
+                 data.frame()%>%
+                 filter(!is.na(Species))%>%
+                 group_by(YEAR) %>%
+                 summarise(total_sets = n_distinct(SETNO))
+
+# Summarize total count and weight by species and year, normalized by the number of sets per year
+fish_summary <- rv_formatted %>%
+  data.frame()%>%
+  filter(!is.na(Species),
+         Phylum == "Chordata")%>%
+  group_by(YEAR, latin) %>%
+  summarise(
+    total_count = sum(std_count, na.rm = TRUE),  # Total count for the species in the year
+    total_weight = sum(std_wgt, na.rm = TRUE)   # Total weight for the species in the year
+  ) %>%
+  left_join(sets_per_year) %>%      # Join with the sets_per_year data
+  mutate(
+    count_per_set = total_count / total_sets,    # Normalize count by number of sets
+    weight_per_set = total_weight / total_sets, # Normalize weight by number of sets
+    count_rank = rank(-count_per_set),          # Rank species by normalized count
+    weight_rank = rank(-weight_per_set)         # Rank species by normalized weight
+  ) %>%
+  arrange(YEAR, weight_rank) 
+                         
+          
+top_10_fish <- fish_summary %>%
+  filter(count_rank <= 10 | weight_rank <= 10) %>%
+  mutate(
+    in_top_10_count = ifelse(count_rank <= 10, 1, 0),  # 1 if in top 10 by count
+    in_top_10_weight = ifelse(weight_rank <= 10, 1, 0) # 1 if in top 10 by weight
+  )
+
+# Summarize the number of occurrences in the top 10 for each aphiaID
+top_10_summary <- top_10_fish %>%
+  group_by(latin) %>%
+  summarise(
+    top_10_count_occurrences = sum(in_top_10_count),   # Times in top 10 by count
+    top_10_weight_occurrences = sum(in_top_10_weight) # Times in top 10 by weight
+  ) %>%
+  arrange(desc(top_10_count_occurrences), desc(top_10_weight_occurrences))%>%
+  left_join(.,grouped_data)%>%# Sort by most frequent
+  mutate(rank = 1:n())
+# View the summary
+
+#missed species
+top_10_summary%>%
+  slice(1:10)%>%
+  filter(aphiaID %in% setdiff(aphiaID,edna_data%>%pull(aphiaID)%>%unique()))%>%
+  dplyr::select(Species,aphiaID,rank)
+
+
+rv_comp_direct%>%filter(aphiaID %in% setdiff(top_10_summary%>%slice(1:10)%>%pull(aphiaID),edna_data%>%pull(aphiaID)%>%unique()))
+
+top_10_df <- top_10_summary%>%
+             slice(1:10)%>%
+             rowwise()%>%
+             mutate(Common = common_name(aphiaID),
+                    type = ifelse(aphiaID %in% setdiff(aphiaID,edna_data%>%pull(aphiaID)%>%unique()),"RV only","Shared"))%>%
+             dplyr::select(Common,Species,aphiaID,rank,type)
+             
+
+#Manual fixes
+top_10_df[top_10_df$Species=="Myzopsetta ferruginea","Common"] <- "Yellowtail flounder"
+top_10_df[top_10_df$Species=="Pollachius virens","Common"] <- "Pollock"
+top_10_df[top_10_df$Species=="Pseudopleuronectes americanus","Common"] <- "Winter flounder"
+
+write.csv(top_10_df,file="output/top_10_fish.csv",row.names = FALSE)
+
+
+  tt <- read.csv("data/2020eDNA_COI12S16S_FinalTaxaTable.csv")%>%
+        rowwise() %>%
+        mutate(otu_count = sum(c_across(starts_with("EDNA"))))%>%
+        data.frame()%>%
+        #filter(otu_count>0)%>%
+        gather(key="station","count",2:8)%>%
+        mutate(latin=gsub(" g\\.$","",OTU_ID),
+               latin=gsub(" cf.","",latin),
+               latin=gsub(" f\\.$","",latin))%>%
+        filter(grepl("gadus",tolower(latin))| grepl("pollac",tolower(latin)))%>%
+        dplyr::select(-OTU_ID,-station,-count,-otu_count)%>%
+          pivot_longer(
+            cols = starts_with("eDNA20"),  # Select site columns
+            names_to = "Site",                # Name for the new 'site' column
+            values_to = "Count"               # Name for the new values column
+          ) %>%
+        filter(Count>0)%>%
+        mutate(id=paste(latin,Site,Count,sep="-"))%>% #this code is crudgy AF but works
+        distinct(id,.keep_all=T)
+  
+  #was gadus observed in webca
+  tt%>%filter(Site %in% unique(edna_data$stations))
+  
 
 ## general summary stats
 
