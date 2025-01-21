@@ -349,3 +349,80 @@ edna_data <- edna_species_df%>%
 save(edna_data,file="data/edna_taxonomy.RData")
 
 
+#now get the taxonomy of all the other species detected by eDNA in comparison to the RV sets in WEBCA
+edna_df_other <- read.csv("data/merged_edna_samples.csv")%>% #this is the eDNA sample metadata from the 2020 survey where it was collected 
+                  st_as_sf(coords=c("longitude","latitude"),crs=latlong)%>%
+                  st_join(.,edna_buffer,join=st_intersects)%>%
+                  filter(is.na(name))%>%
+                  dplyr::select(-name)%>%
+                  mutate(stations=gsub("-","_",edna_sample_name))%>%
+                  distinct(stations,.keep_all=T)
+
+edna_species_df_other <- read.csv("data/2020eDNA_COI12S16S_FinalTaxaTable.csv")%>%
+                         dplyr::select(c("OTU_ID",edna_df_other$stations))%>%
+                         rowwise() %>%
+                          mutate(otu_count = sum(c_across(starts_with("EDNA"))))%>%
+                          data.frame()%>%
+                          filter(otu_count>0)%>%
+                          gather(key="station","count",2:8)%>%
+                          mutate(latin=gsub(" g\\.$","",OTU_ID),
+                                 latin=gsub(" cf.","",latin),
+                                 latin=gsub(" f\\.$","",latin))
+
+
+edna_species_other <- edna_species_df_other%>%pull(latin)%>%unique()
+
+tax_list_edna_other <- data.frame()
+
+for(i in 1:length(edna_species_other)){
+  
+  sp <- edna_species_other[i]
+  
+  message(paste0("Working on ",sp," ",i," of ",length(edna_species_other)))
+  
+  temp <- classification(sp,db="worms") #run classification
+  
+  temp2 <- temp[[1]]%>% #unpack classification
+    data.frame()
+  
+  if(nrow(temp2[1])>1){
+    
+    temp2 <- temp2%>%
+      select(rank,name)%>%
+      spread(rank,name)%>%
+      mutate(aphiaID = temp[[1]]%>%data.frame()%>%slice(n())%>%pull(id))
+    
+    temp3 <- temp2%>% #trim classification
+      select(all_of(c(names(temp2)[names(temp2)%in%PhyloNames],"aphiaID")))
+    
+    #if data is missing or a certain taxonomic level isn't identified.
+    missing_cols <- setdiff(c(PhyloNames,"aphiaID"),names(temp3))
+    
+    if(length(missing_cols)>0){
+      
+      temp3[,missing_cols] <- NA
+      
+      temp3 <- temp3[,c(PhyloNames,"aphiaID")]
+      
+    }
+  }else{temp3 <- data.frame(matrix(NA, nrow = 1, ncol = length(PhyloNames)))
+  names(temp3) = PhyloNames
+  temp3$aphiaID = NA}
+  
+  temp3$species_filter <- sp # this is for linking back in the original code
+  
+  tax_list_edna_other <- rbind(tax_list_edna_other,temp3)
+  
+}                     
+
+edna_formatted_other <- tax_list_edna_other%>%
+                        dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+                        rename(latin = species_filter)
+
+edna_data_other <- edna_species_df_other%>%
+  left_join(.,edna_formatted_other)%>%
+  rename(stations=station)%>%
+  left_join(edna_df_other)
+
+save(edna_data_other,file="data/edna_taxonomy_other.RData")
+
