@@ -495,6 +495,47 @@ write.csv(top_10_df,file="output/top_10_fish.csv",row.names = FALSE)
   tt%>%filter(Site %in% unique(edna_data$stations))
   
 
+#Do the comparison of the detection inside of WEBCA (RV) historically vs the totality of the 2020 offshore sampling
+  
+  load("data/edna_taxonomy_other.RData")
+  
+  edna_total <- rbind(edna_data_other%>%dplyr::select(all_of(PhyloNames),"aphiaID",latin),
+                      edna_data%>%dplyr::select(all_of(PhyloNames),"aphiaID",latin))%>%
+                data.frame()%>%
+                distinct(aphiaID,.keep_all=TRUE)%>%
+                filter(!is.na(Species))%>%
+                rename(species_filter = latin)%>%
+                mutate(method='edna')
+  
+  rv_comp_all_other <- rv_formatted%>%
+                        data.frame()%>%
+                        distinct(aphiaID,.keep_all=TRUE)%>%
+                        filter(!is.na(Species))%>%
+                        rename(species_filter = latin)%>%
+                        dplyr::select(all_of(c(PhyloNames,"aphiaID","species_filter")))%>%
+                        mutate(method='rv')%>%
+                        rbind(.,edna_total)
+  
+  bar_all_other <- rv_comp_all_other%>%
+                    group_by(aphiaID)%>%
+                    mutate(Status = case_when(
+                      sum(method == "rv") == 1 & sum(method == "edna") == 0 ~ "Traditional Only",
+                      sum(method == "rv") == 0 & sum(method == "edna") == 1 ~ "eDNA Only",
+                      TRUE ~ "Shared"
+                    ))%>%
+                    ungroup()%>%
+                    distinct(aphiaID,.keep_all=TRUE)%>%
+                    group_by(Phylum,Status)%>%
+                    summarise(Count=n())%>%
+                    ungroup()%>%
+                    mutate(Status = factor(Status,levels=c("Shared","Traditional Only","eDNA Only")))%>%
+                    data.frame()
+  
+  bar_plot_all_other <- venn_bar(bar_all_other)
+  
+  ggsave("output/bar_plot_all_other.png",bar_plot_all_other,height=5,width=7,units="in",dpi=300)
+  
+
 ## general summary stats
 
 #total distance
