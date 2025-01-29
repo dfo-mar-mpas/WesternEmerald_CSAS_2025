@@ -119,8 +119,6 @@ network_targets_padded <- network_targets_padded1 %>%
 # Create named vector for labels
 id_labels_network <- setNames(network_targets_padded$abbrev, network_targets_padded$id)
 
-linedata <- data.frame(abbrev_lab=rep(plotdata$abbrev_lab,2),plan=c(plotdata$plan,plotdata$target))
-
 linedata <- network_targets_padded%>%
             dplyr::select(id,Achieved,type,target_met)%>%
             rbind(.,
@@ -135,24 +133,6 @@ network_webca <- network_targets_padded%>%
                              filter(abbrev !="")%>%
                              dplyr::select(abbrev,Achieved))
               
-            
-
-
-network_target_plot <- ggplot() +
-                        geom_line(data = linedata,aes(y = factor(id),x=Achieved,group=factor(id)),lwd=0.5,col="grey70")+
-                        geom_bar(data=network_targets_padded,aes(y = factor(id),  fill = type,x = Achieved,alpha = target_met),stat = "identity", col = NA) +
-                        geom_bar(data=network_webca,aes(y = factor(id),fill = type, x = Achieved,alpha = target_met),stat="identity",col="black")+
-                        geom_point(data=network_targets_padded,aes(y = factor(id),  fill = type,x = Minimum.Target))+
-                        scale_alpha_manual(values = c("yes" = 1, "no" = 0.5)) +  # Assign transparency manually
-                        theme_bw() +
-                        theme(strip.background = element_blank(),
-                              strip.text = element_blank(),
-                              legend.position = "none",
-                              axis.text.y = element_text(size = rel(0.7)),
-                              panel.grid = element_blank()) +
-                        scale_y_discrete(labels = id_labels_network) +
-                        scale_x_continuous(expand = c(0.01, 0)) +
-                        labs(y = "", x = "% of design target")
 
 #which features does WEBMR have more than 50% of in the network
 webca_threshold_features <- webca_targets_padded%>%
@@ -180,3 +160,18 @@ network_target_plot <- ggplot() +
                         labs(y = "", x = "% of design target")
 
 ggsave("output/network_target_plot.png",network_target_plot,width=7,height=12,dpi = 1200)
+
+
+#summaries
+
+network_targets%>%
+  distinct(feature,.keep_all=T)%>%
+  pull(filter)%>%
+  table()%>%
+  data.frame()
+
+network_targets%>%
+  distinct(feature,.keep_all=T)%>%
+  filter(feature %in% webca_threshold_features)%>%
+  arrange(filter,type)%>%
+  dplyr::select(filter,type,feature)
