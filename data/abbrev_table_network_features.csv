@@ -1,0 +1,100 @@
+feature,type,filter,abbrev,plot_name
+Areas of high ichthyoplankton species richness ,Biodiversity hotspot,Fine-filter,Larval Diversity,Larval Div
+Areas of high fish species richness (East),Biodiversity hotspot,Fine-filter,Fish Diversity 4VW,Fish Div 4VW
+Areas of high fish species richness (West),Biodiversity hotspot,Fine-filter,Fish Diversity 4X,Fish Div 4X
+Areas of high invertebrate species richness (East),Biodiversity hotspot,Fine-filter,Invert Diversity 4VW,Inv Div 4VW
+Areas of high invertebrate species richness (West),Biodiversity hotspot,Fine-filter,Invert Diversity 4X,Inv Div 4X
+Areas of high small fish species richness (East),Biodiversity hotspot,Fine-filter,Small Fish Diversity Fish 4VW,Sm Fish Div 4Vw
+Areas of high small fish species richness (West),Biodiversity hotspot,Fine-filter,Small Fish Diversity Fish 4X,Sm Fish Div 4X
+Areas of high small invertebrate species richness (East),Biodiversity hotspot,Fine-filter,Small Invert Diversity 4VW,Sm Inv Div 4VW
+Areas of high small invertebrate species richness (West),Biodiversity hotspot,Fine-filter,Small Invert Diversity 4X,Sm Inv Div 4X
+Stalked tunicate fields,Biogenic habitat,Fine-filter,Boltenia,Boltenia
+Large gorgonian coral concentrations (Kernel Density Estimations),Biogenic habitat,Fine-filter,Lg Gorgonian KDE,Lg Gorgonian KDE
+Large gorgonian coral concentrations (Species Distribution Models),Biogenic habitat,Fine-filter,Lg Gorgonian SDM,Lg Gorgonian SDM
+Other sponge concentrations (Kernel Density Estimations),Biogenic habitat,Fine-filter,Sponges Gen,Sponges General
+Sand dollar distribution (Kernel Density Estimate),Biogenic habitat,Fine-filter,Sand Dollar,Sand Dollar
+Sea pen fields (Kernel Density Estimations),Biogenic habitat,Fine-filter,Sea Pens SDM,Sea Pens SDM
+Sea pen fields (Species Distribution Models),Biogenic habitat,Fine-filter,Sea Pens KDE,Sea Pens KDE
+Small gorgonian coral concentrations (Species Distribution Models),Biogenic habitat,Fine-filter,Sm Gorgonian SDM,Sm Gorgonian SDM
+Soft coral gardens (Kernel Density Estimations),Biogenic habitat,Fine-filter,Soft Coral,Soft Coral
+Vazella pourtalesi (sponge) concentrations (Kernel Density Estimations),Biogenic habitat,Fine-filter,Vazella,Vazella
+Baccaro and LaHave Banks ,Biophysical unit,Coarse-filter,Baccro Lehave,Baccro Lehave
+Eastern Scotian Shelf ,Biophysical unit,Coarse-filter,ESS,Eastern Scotian Shelf
+Gulf of Maine ,Biophysical unit,Coarse-filter,GOM,Gulf of Maine
+LaHave and Emerald Basins ,Biophysical unit,Coarse-filter,Lehave Emerald,Lehave Emerald
+Laurentian Slope ,Biophysical unit,Coarse-filter,Laurentian Slope,Laurentian Slope
+"Slope, Rise, and Abyss ",Biophysical unit,Coarse-filter,Slope-Rise-Abyss,Slope-Rise-Abyss
+Western and Sable Island Banks ,Biophysical unit,Coarse-filter,Western Sable,Western Sable
+American Plaice Habitat (East),Depleted species,Fine-filter,Am Plaice 4VW,Amer. Plaice 4VW
+American Plaice Habitat (West),Depleted species,Fine-filter,Am Plaice 4X,Amer. Plaice 4X
+Atlantic Cod Habitat (Zone 4Vn),Depleted species,Fine-filter,A Cod 4Vn,Atl. Cod 4Vn
+Atlantic Cod Habitat (Zone 4Vs & 4W),Depleted species,Fine-filter,A Cod 4VsW,Atl. Cod 4VsW
+Atlantic Cod Habitat (Zone 4X),Depleted species,Fine-filter,A Cod 4X,Atl. Cod 4X
+Atlantic Wolffish Habitat,Depleted species,Fine-filter,Atl Wolffish,Atl. Wolffish
+Cusk Habitat,Depleted species,Fine-filter,Cusk ,Cusk 
+North Atlantic Right Whale Critical Habitat,Depleted species,Fine-filter,Right Whale CH,Right Whale CH
+Northern Bottlenose Whale Critical Habitat,Depleted species,Fine-filter,N Bottlenose CH,N Bottlenose CH
+Ocean Pout Habitat,Depleted species,Fine-filter,Ocean Pout,Ocean Pout
+Redfish Habitat,Depleted species,Fine-filter,Redfish,Redfish
+Roughhead Grenadier Habitat,Depleted species,Fine-filter,Roughhead Gren,Roughhead Grenadier
+Roundnose Grenadier Habitat,Depleted species,Fine-filter,Roundnose Gren,Roundnose Grenadier
+Smooth Skate Habitat (East),Depleted species,Fine-filter,Sm. Skate 4VsW,Smooth Skate 4VsW
+Smooth Skate Habitat (West),Depleted species,Fine-filter,Sm. Skate 4X,Smooth Skate 4X
+Spiny Dogfish Habitat,Depleted species,Fine-filter,Spiny Dogfish,Spiny Dogfish
+Thorny Skate Habitat (East),Depleted species,Fine-filter,Th. Skate 4VSW,Thorny Skate 4VSW
+Thorny Skate Habitat (West),Depleted species,Fine-filter,Th. Skate 4X,Thorny Skate 4X
+White Hake Habitat (East),Depleted species,Fine-filter,White Hake 4VW,White Hake 4VW
+White Hake Habitat (West),Depleted species,Fine-filter,White Hake 4X,White Hake 4X
+Winter Skate Habitat,Depleted species,Fine-filter,Wint. Skate 4VsW,Winter Skate 4VsW
+Large Benthic Benthivores (East) ,Fish functional group,Coarse-filter,Benthic Lg 4VW,Benthic Lg 4VW
+Large Benthic Benthivores (West) ,Fish functional group,Coarse-filter,Benthic Lg 4X,Benthic Lg 4X
+Medium Benthic Benthivores (East) ,Fish functional group,Coarse-filter,Benthic Med 4VW,Benthic Med 4VW
+Medium Benthic Benthivores (West) ,Fish functional group,Coarse-filter,Benthic Med 4X,Benthic Med 4X
+Small Benthic Benthivores (East) ,Fish functional group,Coarse-filter,Benthic Sm 4VW,Benthic Sm 4VW
+Small Benthic Benthivores (West) ,Fish functional group,Coarse-filter,Benthic SM 4X,Benthic Sm 4X
+Large Benthic Piscivores (East) ,Fish functional group,Coarse-filter,Pisc Benthic Lg 4VW,Pisc Benthic Lg 4VW
+Large Benthic Piscivores (West) ,Fish functional group,Coarse-filter,Pisc Benthic Lg 4X,Pisc Benthic Lg 4X
+Small and Medium Benthic Piscivores (East) ,Fish functional group,Coarse-filter,Pisc Benthic SM 4VW,Pisc Benthic SM 4VW
+Small and Medium Benthic Piscivores (West) ,Fish functional group,Coarse-filter,Pisc Benthic SM 4X,Pisc Benthic SM 4X
+"Small, Medium and Large Pelagic Piscivores (East) ",Fish functional group,Coarse-filter,Pisc Pelagic SML 4VW,Pisc Pelagic SML 4VW
+"Small, Medium, and Large Pelagic Planktivores (East) ",Fish functional group,Coarse-filter,Plank Pelagic SML 4VW,Plank Pelagic SML 4VW
+"Small, Medium, and Large Pelagic Planktivores (West) ",Fish functional group,Coarse-filter,Plank Pelagic SML 4X,Plank Pelagic SML 4X
+"Small, Medium, and Large Benthic Zoopiscivores (East) ",Fish functional group,Coarse-filter,Zoopisc Benthic SML 4VW,Zoopisc Benthic SML 4VW
+"Small, Medium, and Large Benthic Zoopiscivores (West) ",Fish functional group,Coarse-filter,Zoopisc Benthic SML 4X,Zoopisc Benthic SML 4X
+"Small, Medium, and Large Pelagic Zoopiscivores (East) ",Fish functional group,Coarse-filter,Zoopisc Pelagic SML 4VW,Zoopisc Pelagic SML 4VW
+"Small, Medium, and Large Pelagic Zoopiscivores (West) ",Fish functional group,Coarse-filter,Zoopisc Pelagic SML 4X,Zoopisc Pelagic SML 4X
+Abyssal Plain ,Geomorphic unit,Coarse-filter,Abyssal Plain,Abyssal Plain
+Continental Rise ,Geomorphic unit,Coarse-filter,Continental Rise,Continental Rise
+Shelf Bank ,Geomorphic unit,Coarse-filter,Shelf Bank,Shelf Bank
+Shelf Basin ,Geomorphic unit,Coarse-filter,Shelf Basin,Shelf Basin
+Shelf Channel ,Geomorphic unit,Coarse-filter,Shelf Channel,Shelf Channel
+Shelf Flat ,Geomorphic unit,Coarse-filter,Shelf Flat,Shelf Flat
+Shelf Topo. Complex ,Geomorphic unit,Coarse-filter,Shelp Top,Shelp Top
+Shelf Topo. Complex Bank ,Geomorphic unit,Coarse-filter,Shelf Top Bank,Shelf Top Bank
+Shelf Topo. Complex Basin ,Geomorphic unit,Coarse-filter,Shelf Top Basin,Shelf Top Basin
+Slope ,Geomorphic unit,Coarse-filter,Slope,Slope
+Slope Channel ,Geomorphic unit,Coarse-filter,Slope Channel ,Slope Channel 
+Detritivores (East) ,Invertebrate functional group,Coarse-filter,Inv Detritivore 4VW,Inv Detritivore 4VW
+Detritivores (West) ,Invertebrate functional group,Coarse-filter,Inv Detritivore 4X,Inv Detritivore 4X
+Benthic Colonial Filter Feeders (East) ,Invertebrate functional group,Coarse-filter,Inv Ben Colon FF 4VW,Inv Ben Colon 4VW
+Benthic Non-Colonial Filter Feeders (East) ,Invertebrate functional group,Coarse-filter,Inv Ben n-Colon FF 4VW,Inv Ben n-Colon FF 4VW
+Benthic Non-Colonial Filter Feeders (West) ,Invertebrate functional group,Coarse-filter,Inv Ben n-Colon FF 4X,Inv Ben n-Colon FF 4X
+"Small, Medium, and Large Zoopiscivores (East) ",Invertebrate functional group,Coarse-filter,Inv Zoopisc SML 4VW,Inv Zoopisc SML 4VW
+"Small, Medium, and Large Zoopiscivores (West) ",Invertebrate functional group,Coarse-filter,Inv Zoopisc SML 4X,Inv Zoopisc SML 4X
+Very low natural disturbance ,Natural disturbance,Coarse-filter,V. Low ,Very Low 
+Low natural disturbance ,Natural disturbance,Coarse-filter,Low ,Low 
+Medium natural disturbance ,Natural disturbance,Coarse-filter,Medium ,Medium 
+High natural disturbance ,Natural disturbance,Coarse-filter,High ,High 
+Very low scope for growth ,Scope for growth,Coarse-filter,V. Low,Very Low
+Low scope for growth ,Scope for growth,Coarse-filter,Low,Low
+Moderate scope for growth ,Scope for growth,Coarse-filter,Moderate,Moderate
+High scope for growth ,Scope for growth,Coarse-filter,High,High
+Very high scope for growth ,Scope for growth,Coarse-filter,V. High,Very High
+Plunge-Diving Piscivores ,Seabird functional group,Coarse-filter,Plunge Dive Pisc,Plunge Dive Pisc
+Pursuit-Diving Piscivores ,Seabird functional group,Coarse-filter,Pursuit Dive Pisc,Pursuit Dive Pisc
+Pursuit-Diving Planktivores ,Seabird functional group,Coarse-filter,Pursuit Dive Plank,Pursuit Dive Plank
+Shallow Pursuit Generalists ,Seabird functional group,Coarse-filter,Shall Pursuit General,Shall Pursuit General
+Ship-Following Generalists ,Seabird functional group,Coarse-filter,Ship-Follow General,Ship-Follow General
+Surface-Seizing Planktivores ,Seabird functional group,Coarse-filter,Surface Seize Plank,Surface Seize Plank
+Surface Shallow-Diving Coastal Piscivores ,Seabird functional group,Coarse-filter,Surface Shall Dive Coast Pisc,Surface Shall Dive Coast Pisc
+Surface Shallow-Diving Piscivores/Generalists ,Seabird functional group,Coarse-filter,Surface Shallo Dive Pisc,Surface Shallo Dive Pisc

@@ -1,0 +1,113 @@
+Feature,abbrev,abbrev_lab,target,plan,target_met,status,class,filter
+Baccaro and LaHave Banks,Baccro Lehave,Baccro Lehave,0.27,0.22,no,Increase,Oceanographic units,Coarse
+Eastern Scotian Shelf,ESS,Eastern Scotian Shelf,0.16,0.18,yes,Increase,Oceanographic units,Coarse
+Gulf of Maine,GOM,Gulf of Maine,0.21,0.24,yes,Increase,Oceanographic units,Coarse
+LaHave and Emerald Basins,Lehave Emerald,Lehave Emerald,0.19,0.37,yes,Same,Oceanographic units,Coarse
+Laurentian Slope,Laurentian Slope,Laurentian Slope,0.24,0.1,no,Decrease,Oceanographic units,Coarse
+Slope-Rise-Abyss,Slope-Rise-Abyss,Slope-Rise-Abyss,0.2,0.28,yes,Increase,Oceanographic units,Coarse
+Western and Sable Island Bank,Western Sable,Western Sable,0.22,0.12,no,Increase,Oceanographic units,Coarse
+Abyssal Plain,Abyssal Plain,Abyssal Plain,0.2,0.2,yes,Increase,Geomorphic units,Coarse
+Continental Rise,Continental Rise,Continental Rise,0.2,0.33,yes,Increase,Geomorphic units,Coarse
+Shelf Bank,Shelf Bank,Shelf Bank,0.1,0.23,yes,Increase,Geomorphic units,Coarse
+Shelf Bank (Georges),Shelf Georges,Shelf Georges,0.1,0.1,no,Increase,Geomorphic units,Coarse
+Shelf Basin,Shelf Basin,Shelf Basin,0.23,0.22,no,Increase,Geomorphic units,Coarse
+Shelf Channel,Shelf Channel,Shelf Channel,0.28,0.36,yes,Increase,Geomorphic units,Coarse
+Shelf Flat,Shelf Flat,Shelf Flat,0.13,0.22,yes,Decrease,Geomorphic units,Coarse
+Shelf Topographically Complex,Shelp Top,Shelp Top,0.21,0.16,no,Increase,Geomorphic units,Coarse
+Shelf Topographically Complex Bank,Shelf Top Bank,Shelf Top Bank,0.24,0.13,no,Decrease,Geomorphic units,Coarse
+Shelf Topographically Complex Basin,Shelf Top Basin,Shelf Top Basin,0.38,0.22,no,Increase,Geomorphic units,Coarse
+Slope,Slope,Slope,0.25,0.48,yes,Increase,Geomorphic units,Coarse
+Slope Channel,Slope Channel,Slope Channel,0.18,0.09,no,Decrease,Geomorphic units,Coarse
+Eastern Scotian Slope,Eastern Scotian Slope,Eastern Scotian Slope,0.14,0.46,yes,Increase,Geomorphic units,Coarse
+Georges Slope,Georges Slope,Georges Slope,0.38,0.58,yes,Increase,Geomorphic units,Coarse
+Gully Fan,Gully Fan,Gully Fan,0.18,0.16,no,Increase,Geomorphic units,Coarse
+Laurentian Fan,Laurentian Fan,Laurentian Fan,0.13,0.09,yes,Decrease,Geomorphic units,Coarse
+Northeast Channel Fan,Northeast Channel Fan,Northeast Channel Fan,0.24,0.45,yes,Increase,Geomorphic units,Coarse
+Scotian Rise Debris Flow,Scotian Rise Debris Flow,Scotian Rise Debris Flow,0.31,0.6,yes,Decrease,Geomorphic units,Coarse
+Western Scotian Slope,Western Scotian Slope,Western Scotian Slope,0.16,0.126,no,Increase,Geomorphic units,Coarse
+Natural Disturbance High,High ,High ,0.12,0.19,yes,Increase,Natural disturb.,Coarse
+Natural Disturbance Low,Low ,Low ,0.1,0.2,yes,Increase,Natural disturb.,Coarse
+Natural Disturbance Medium,Medium ,Medium ,0.1,0.25,yes,Increase,Natural disturb.,Coarse
+Natural Disturbance Very Low,V. Low ,Very Low ,0.12,0.15,yes,Decrease,Natural disturb.,Coarse
+Scope for Growth High,High,High,0.14,0.32,yes,Increase,Scope for growth,Coarse
+Scope for Growth Low,Low,Low,0.1,0.23,yes,Increase,Scope for growth,Coarse
+Scope for Growth Moderate,Moderate,Moderate,0.1,0.28,yes,Increase,Scope for growth,Coarse
+Scope for Growth Very High,V. High,Very High,0.13,0.13,no,Decrease,Scope for growth,Coarse
+Scope for Growth Very Low,V. Low,Very Low,0.1,0.2,yes,Increase,Scope for growth,Coarse
+FishBenthivoreBenthicLarge4VW,Benthic Lg 4VW,Benthic Lg 4VW,0.1,0.37,yes,Increase,Fish functional,Coarse
+FishBenthivoreBenthicLarge4X,Benthic Lg 4X,Benthic Lg 4X,0.11,0.2,yes,Increase,Fish functional,Coarse
+FishBenthivoreBenthicMedium4VW,Benthic Med 4VW,Benthic Med 4VW,0.1,0.23,yes,Increase,Fish functional,Coarse
+FishBenthivoreBenthicMedium4X,Benthic Med 4X,Benthic Med 4X,0.12,0.22,yes,Increase,Fish functional,Coarse
+FishBenthivoreBenthicSmall4VW,Benthic Sm 4VW,Benthic Sm 4VW,0.1,0.18,yes,Increase,Fish functional,Coarse
+FishBenthivoreBenthicSmall4X,Benthic SM 4X,Benthic Sm 4X,0.15,0.24,yes,Increase,Fish functional,Coarse
+FishPiscivoreBenthicLarge4VW,Pisc Benthic Lg 4VW,Pisc Benthic Lg 4VW,0.1,0.19,yes,Increase,Fish functional,Coarse
+FishPiscivoreBenthicLarge4X,Pisc Benthic Lg 4X,Pisc Benthic Lg 4X,0.12,0.16,yes,Decrease,Fish functional,Coarse
+FishPiscivoreBenthicSmallMed4VW,Pisc Benthic SM 4VW,Pisc Benthic SM 4VW,0.1,0.21,yes,Increase,Fish functional,Coarse
+FishPiscivoreBenthicSmallMed4X,Pisc Benthic SM 4X,Pisc Benthic SM 4X,0.12,0.29,yes,Decrease,Fish functional,Coarse
+FishPiscivorePelagicSmallMedLarge4VW,Pisc Pelagic SML 4VW,Pisc Pelagic SML 4VW,0.15,0.26,yes,Increase,Fish functional,Coarse
+FishPlanktivorePelagicSmallMedLarge4VW,Plank Pelagic SML 4VW,Plank Pelagic SML 4VW,0.1,0.28,yes,Increase,Fish functional,Coarse
+FishPlanktivorePelagicSmallMedLarge4X,Plank Pelagic SML 4X,Plank Pelagic SML 4X,0.12,0.28,yes,Increase,Fish functional,Coarse
+FishZoopiscivoreBenthicSmallMedLarge4VW,Zoopisc Benthic SML 4VW,Zoopisc Benthic SML 4VW,0.1,0.25,yes,Increase,Fish functional,Coarse
+FishZoopiscivoreBenthicSmallMedLarge4X,Zoopisc Benthic SML 4X,Zoopisc Benthic SML 4X,0.12,0.21,yes,Increase,Fish functional,Coarse
+FishZoopiscivorePelagicSmallMedLarge4VW,Zoopisc Pelagic SML 4VW,Zoopisc Pelagic SML 4VW,0.17,0.25,yes,Increase,Fish functional,Coarse
+FishZoopiscivorePelagicSmallMedLarge4X,Zoopisc Pelagic SML 4X,Zoopisc Pelagic SML 4X,0.23,0.36,yes,Decrease,Fish functional,Coarse
+InvertebrateBenthivoreBenthicMedium4VW,Inv Benthivore Med 4VW,Inv Benthivore Med 4VW,0.1,0.16,yes,Increase,Invert. functional,Coarse
+InvertebrateBenthivoreBenthicMedium4X,Inv Benthivore Med 4X,Inv Benthivore Med 4X,0.1,0.26,yes,Increase,Invert. functional,Coarse
+InvertebrateBenthivoreBenthicSmall4VW,Inv Benthivore Sm 4VW,Inv Benthivore Sm 4VW,0.1,0.16,yes,Increase,Invert. functional,Coarse
+InvertebrateBenthivoreBenthicSmall4X,Inv Benthivore Sm 4X,Inv Benthivore Sm 4X,0.11,0.23,yes,Increase,Invert. functional,Coarse
+InvertebrateDetritivore4VW,Inv Detritivore 4VW,Inv Detritivore 4VW,0.1,0.16,yes,Increase,Invert. functional,Coarse
+InvertebrateDetritivore4X,Inv Detritivore 4X,Inv Detritivore 4X,0.19,0.17,no,Decrease,Invert. functional,Coarse
+InvertebrateFilterfeederBenthicColonial4VW,Inv FF Ben Colon 4VW,Inv FF Ben Colon 4VW,0.12,0.16,yes,Same,Invert. functional,Coarse
+InvertebrateFilterfeederBenthicNonColonial4VW,Inv FF Ben Non-Colon 4VW,Inv FF Ben Non-Colon 4VW,0.1,0.18,yes,Increase,Invert. functional,Coarse
+InvertebrateFilterfeederBenthicNonColonial4X,Inv FF Ben Non-Colon 4X,Inv FF Ben Non-Colon 4X,0.14,0.32,yes,Decrease,Invert. functional,Coarse
+InvertebrateZoopiscivoreSmallMedLarge4VW,Inv Zoopisc SML 4VW,Inv Zoopisc SML 4VW,0.22,0.25,yes,Increase,Invert. functional,Coarse
+InvertebrateZoopiscivoreSmallMedLarge4X,Inv Zoopisc SML 4X,Inv Zoopisc SML 4X,0.11,0.25,yes,Increase,Invert. functional,Coarse
+SeabirdPlungeDivingPiscivore,Plunge Dive Pisc,Plunge Dive Pisc,0.1,0.24,yes,Decrease,Seabird functional,Coarse
+SeabirdPursuitDivingPiscivore,Pursuit Dive Pisc,Pursuit Dive Pisc,0.1,0.46,yes,Increase,Seabird functional,Coarse
+SeabirdPursuitDivingPlanktivore,Pursuit Dive Plank,Pursuit Dive Plank,0.1,0.59,yes,Increase,Seabird functional,Coarse
+SeabirdShallowPursuitGeneralist,Shall Pursuit General,Shall Pursuit General,0.1,0.14,yes,Increase,Seabird functional,Coarse
+SeabirdSurfaceSeizingPlanktivore,Surface Seize Plank,Surface Seize Plank,0.19,0.43,yes,Decrease,Seabird functional,Coarse
+SeabirdSurfaceShallowDivingCoastalPiscivore,Surface Shall Dive Coast Pisc,Surface Shall Dive Coast Pisc,0,0.12,yes,Increase,Seabird functional,Coarse
+SeabirdSurfaceShallowDivingPiscivore,Surface Shallo Dive Pisc,Surface Shallo Dive Pisc,0.1,0.19,yes,Decrease,Seabird functional,Coarse
+Large Gorgonian_SDM,Lg Gorgonian SDM,Lg Gorgonian SDM,0.2,0.29,yes,Increase,Biogenic habitats,Fine
+Small Gorgonian_SDM,Sm Gorgonian SDM,Sm Gorgonian SDM,0.2,0.28,yes,Increase,Biogenic habitats,Fine
+Sea Pens_SDM,Sea Pens SDM,Sea Pens SDM,0.2,0.29,yes,Increase,Biogenic habitats,Fine
+Large Gorgonian_KDE,Lg Gorgonian KDE,Lg Gorgonian KDE,1,0.42,no,Same,Biogenic habitats,Fine
+Vazella_KDE,Vazella,Vazella,1,0.4,no,Same,Biogenic habitats,Fine
+OtherS ponges_KDE,Sponges Gen,Sponges General,1,0.42,no,Increase,Biogenic habitats,Fine
+Sand Dollar_KDE,Sand Dollar,Sand Dollar,0.2,0.09,no,Decrease,Biogenic habitats,Fine
+Sea Pens_KDE,Sea Pens KDE,Sea Pens KDE,1,0.24,no,Decrease,Biogenic habitats,Fine
+Soft Coral_KDE,Soft Coral,Soft Coral,0.2,0.19,no,Increase,Biogenic habitats,Fine
+Boltenia_KDE,Boltenia,Boltenia,0.6,0.21,no,Same,Biogenic habitats,Fine
+ColdSeeps,Cold seeps,Cold seeps,1,1,yes,Same,Biogenic habitats,Fine
+American Plaice Fall,Am Plaice Fall,Amer. Plaice Fall,0,0.11,yes,Same,Depleted species,Fine
+American Plaice 4VW,Am Plaice 4VW,Amer. Plaice 4VW,0.3,0.13,no,Increase,Depleted species,Fine
+American Plaice 4X,Am Plaice 4X,Amer. Plaice 4X,0.3,0.21,no,Increase,Depleted species,Fine
+Atlantic Cod 4Vn,A Cod 4Vn,Atl. Cod 4Vn,0.7,0.44,no,Same,Depleted species,Fine
+Atlantic Cod 4VsW,A Cod 4VsW,Atl. Cod 4VsW,0.7,0.28,no,Increase,Depleted species,Fine
+Atlantic Cod 4X,A Cod 4X,Atl. Cod 4X,0.7,0.21,no,Decrease,Depleted species,Fine
+Atlantic Wolffish,Atl Wolffish,Atl. Wolffish,0.7,0.29,no,Increase,Depleted species,Fine
+Cusk,Cusk ,Cusk ,0.3,0.21,no,Increase,Depleted species,Fine
+Ocean Pout,Ocean Pout,Ocean Pout,0.3,0.3,no,Increase,Depleted species,Fine
+Redfish Unit2,Redfish,Redfish,0.2,0.29,yes,Increase,Depleted species,Fine
+Roughhead Grenadier,Roughhead Gren,Roughhead Grenadier,0.7,0.29,no,Same,Depleted species,Fine
+Roundnose Grenadier,Roundnose Gren,Roundnose Grenadier,0.9,0.26,no,Same,Depleted species,Fine
+Smooth Skate 4VsW,Sm. Skate 4VsW,Smooth Skate 4VsW,0.7,0.19,no,Increase,Depleted species,Fine
+Smooth Skate 4X,Sm. Skate 4X,Smooth Skate 4X,0.7,0.27,no,Increase,Depleted species,Fine
+Spiny Dogfish,Spiny Dogfish,Spiny Dogfish,0.7,0.17,no,Decrease,Depleted species,Fine
+Thorny Skate 4VsW,Th. Skate 4VSW,Thorny Skate 4VSW,0.3,0.17,no,Increase,Depleted species,Fine
+Thorny Skate 4X,Th. Skate 4X,Thorny Skate 4X,0.3,0.3,yes,Increase,Depleted species,Fine
+White Hake 4VW,White Hake 4VW,White Hake 4VW,0.5,0.16,no,Increase,Depleted species,Fine
+White Hake 4X,White Hake 4X,White Hake 4X,0.5,0.36,no,Decrease,Depleted species,Fine
+Winter Skate 4VsW,Wint. Skate 4VsW,Winter Skate 4VsW,0.9,0.25,no,Increase,Depleted species,Fine
+North Atlantic Right Whale CH,Right Whale CH,Right Whale CH,1,0.03,no,Decrease,Depleted species,Fine
+Northern Bottlenose Whale CH,Bottlenose CH,Bottlenose CH,1,1,yes,Same,Depleted species,Fine
+Larval Diversity,Larval Div,Larval,0.4,0.28,no,Increase,High biodiversity,Fine
+Fish Diversity 4VW,Fish Div 4VW,Fish 4VW,0.4,0.25,no,Increase,High biodiversity,Fine
+Fish Diversity 4X,Fish Div 4X,Fish 4X,0.4,0.17,no,Increase,High biodiversity,Fine
+Invert Diversity 4VW,Inv Div 4VW,Invertebrate 4VW,0.4,0.15,no,Increase,High biodiversity,Fine
+Invert Diversity 4X,Inv Div 4X,Invertebrate 4X,0.4,0.2,no,Increase,High biodiversity,Fine
+Small Invert Diversity 4VW,Sm Inv Div 4VW,Sm Invertebrate 4VW,0.4,0.21,no,Increase,High biodiversity,Fine
+Small Invert Diversity 4X,Sm Inv Div 4X,Sm Invertebrate 4X,0.4,0.1,no,Increase,High biodiversity,Fine
+Small Fish Diversity Fish 4VW,Sm Fish Div 4Vw,Sm Fish 4Vw,0.4,0.28,no,Increase,High biodiversity,Fine
+Small Fish Diversity Fish 4X,Sm Fish Div 4X,Sm Fish  4X,0.4,0.13,no,Increase,High biodiversity,Fine
