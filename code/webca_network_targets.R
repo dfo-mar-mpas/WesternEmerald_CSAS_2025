@@ -61,9 +61,12 @@ webca_plot <- ggplot(webca_targets_padded, aes(y = factor(id), x = Percent.to.Go
   scale_y_discrete(labels = id_labels)+
   scale_x_continuous(expand=(c(0.01,0)),labels=percent)+
   labs(y="",
-       x="% of design target")
+       x="% of design target")+
+  scale_fill_manual(values=c("darkmagenta","darkgoldenrod1","firebrick4",
+                             "deepskyblue4","darkslateblue","cadetblue2","darkgreen",
+                             "darkorange2","deeppink2","seagreen3"))
 
-ggsave("output/webca_design_targets.png",webca_plot,height=8,width=4,units="in",dpi=300)
+ggsave("output/webca_design_targets.png",webca_plot,width=7,height=12,dpi = 1200)
   
 
 
