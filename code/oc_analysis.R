@@ -200,7 +200,7 @@ p3 <- ggplot()+
   labs(fill=expression("OC Density (kg/m"^3*")"))+
   theme(
     legend.position = "inside",
-    legend.position.inside = c(0.98, 0.025),  # Position (0,0 is bottom left, 1,1 is top right)
+    legend.position.inside = c(0.98, 0.015),  # Position (0,0 is bottom left, 1,1 is top right)
     legend.justification = c(1, 0),    # Anchor point of legend box
     legend.text = element_text(size = rel(0.7)),  # Reduce text size by 30%
     legend.title = element_text(size = rel(0.7)),# Also reduce title size to match
