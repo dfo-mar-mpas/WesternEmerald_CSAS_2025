@@ -12,6 +12,7 @@ library(rasterVis)
 library(basemaps)
 library(viridis)
 library(scales)
+library(patchwork)
 
 #Load projections
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
@@ -43,7 +44,9 @@ maritimes_network <- data_draft_areas()%>%
 
 #load the priority areas from Epstien et al. 2025
 bc_areas <- read_sf("data/Shapefiles/PA_Shapefile.shp")%>%
-            st_transform(CanProj)
+            st_transform(CanProj)%>%
+            st_intersection(bioregion)%>%
+            st_make_valid()
 
 # oc_rast <- rast("data/SSOCDen_Rock.tif")[[1]]%>% #the first is the 'mean' OC for the Scotian Shelf
 #            project(CanProj)
@@ -51,7 +54,7 @@ bc_areas <- read_sf("data/Shapefiles/PA_Shapefile.shp")%>%
 oc_rast <- rast("data/OCDEN_Maritimes.tif")%>%
            project(CanProj)
 
-oc_rast_mask <- mask(oc_rast,vect(bioregion%>%))
+oc_rast_mask <- mask(oc_rast,vect(bioregion%>%st_transform(st_crs(oc_rast))))
 
 if (!st_crs(maritimes_network) == crs(oc_rast)) {
   maritimes_network <- st_transform(maritimes_network, crs(oc_rast))
@@ -153,15 +156,39 @@ plot_oc <- maritimes_oc%>%
 
 p2 <- ggplot(plot_oc%>%filter(prop_oc>0.005),aes(x=prop_oc,y=name_oc,fill=prop_oc))+
       geom_bar(stat="identity",col="black")+
+  geom_text(aes(label = scales::percent(prop_oc, accuracy = 0.1)), 
+            hjust = 1.1,  # Position text slightly outside the bar
+            size = 3.5) +
       theme_bw()+
       scale_x_continuous(labels = percent, expand = c(0, 0.001))+ 
-      scale_fill_viridis_b(labels = percent,n.breaks=5)+
-      labs(y="",x="Proportion coverage of total regional OC",fill="")+
+      #scale_fill_viridis_b(labels = percent,n.breaks=5,option="D")+
+  scale_fill_distiller(palette = "Blues", direction = 1,labels=percent) +  # Blue gradient
+  
+      labs(y="",x="Proportional coverage of total regional OC",fill="")+
       theme(legend.position = "inside",
-            legend.position.inside = c(0.9,0.15),
-            legend.background = element_blank())
+            legend.position.inside = c(0.9,0.2),
+            legend.background = element_blank());p2
 
 ggsave("output/OC_analysis.png",p2,width=6,height=6,units="in",dpi=300)
+
+
+#High carbon zone plot
+p3 <- ggplot()+
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=basemap_atlantic)+
+  geom_sf(data=bc_areas,fill="coral2")+
+  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5)+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="grey75")+
+  theme_bw()+
+  coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
+  annotation_scale()
+ 
+
+#combination plot
+
+p_combo <- p1 + p2 + plot_layout(ncol=2)
+
+ggsave("output/oc_combo.png",p_combo,height=6,width=12,units="in",dpi=600)
 
 #now plot the key carbon areas within webca
 
@@ -183,7 +210,7 @@ oc_webca <- oc_rast_mask%>%
             crop(.,webca_box)%>%
             mask(.,vect(webca))
 
-p3 <- ggplot()+
+p5 <- ggplot()+
   geom_spatraster(data=oc_webca)+
   geom_sf(data=maritimes_network,linewidth=0.5,fill=NA)+
   geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="black")+
