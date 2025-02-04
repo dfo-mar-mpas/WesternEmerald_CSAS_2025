@@ -102,7 +102,7 @@ p1 <- ggplot()+
 p2 <- ggplot()+
   geom_sf(data=rv_strata,fill=NA,col="grey80",lwd=0.3)+
   geom_sf(data=maritimes_network%>%filter(name!="Western/Emerald Banks Marine Refuge"),fill="grey90",alpha=0.5)+
-  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,col="black")+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),fill="grey90",alpha=0.5,linewidth=1.2,col="black")+
   geom_sf(data=rv_df%>%filter(TYPE=="PRIMARY"),aes(shape=set_type),fill="cornflowerblue",col="black",size=2.5)+
   geom_sf(data=rv_df%>%filter(TYPE!="PRIMARY"),aes(shape=set_type),col="black",size=1)+
   scale_shape_manual(values=c(21,3))+
