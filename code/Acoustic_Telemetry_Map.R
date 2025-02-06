@@ -87,7 +87,7 @@ p1 <- ggplot()+
   geom_sf(data=basemap)+
   geom_sf(data=basemap%>%filter(country=="Canada"),fill="grey60")+
   geom_sf(data=network)+
-  geom_sf(data=buffer_poly,fill=NA,lty=2)+
+  #geom_sf(data=buffer_poly,fill=NA,lty=2)+
   geom_sf(data=network%>%filter(SiteName_E == "Western/Emerald Banks Marine Refuge"),fill="coral2")+
   geom_sf(data=network%>%filter(SiteName_E %in% c("Musquash Estuary Marine Protected Area",
                                                   "St. Anns Bank Marine Protected Area ",
