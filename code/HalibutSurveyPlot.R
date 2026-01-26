@@ -1,8 +1,8 @@
 #Load libraries ---
 library(tidyverse)
 library(MarConsNetData)
-library(Mar.datawrangling)
-library(ROracle)
+#library(Mar.datawrangling)
+#library(ROracle)
 library(sf)
 library(patchwork)
 library(viridis)
@@ -93,6 +93,32 @@ p1 <- ggplot()+
   coord_sf(xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
   annotation_scale()
 
+p1_fr <- ggplot()+ #french translation
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=basemap_atlantic)+
+  geom_sf(data=bathy,lwd=0.25,col="grey80",lty=2)+
+  geom_sf(data=maritimes_network%>%filter(name!="Western/Emerald Banks Marine Refuge"),fill="grey90",alpha=0.5)+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill="grey90",alpha=0.5,col="black")+
+  #geom_sf(data=plot_df%>%filter(YEAR %in% c(2016,2024)),aes(shape=type,fill=type),col="black",size=1)+ #2016 last year full fixed
+  geom_sf(data=plot_df%>%filter(YEAR==2023),aes(shape=factor(YEAR)),size=0.5)+
+  geom_sf(data=plot_df%>%filter(YEAR==2024),aes(shape=factor(YEAR)),fill="cornflowerblue",size=1.5)+
+  scale_shape_manual(values=c(3,21))+
+  scale_x_continuous(
+    labels = function(x) paste0(abs(x), "° O")
+  )+
+  scale_y_continuous(
+    labels = function(y) paste0(abs(y), "° N")
+  )+
+  geom_sf(data=webca_box_poly,lty=2,lwd=0.5,fill=NA)+    
+  theme_bw()+
+  theme(axis.title = element_blank(),
+        legend.position="inside",
+        legend.position.inside = c(0.84,0.92),
+        legend.title = element_blank(),
+        legend.background = element_blank())+
+  coord_sf(xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
+  annotation_scale()
+
 p2 <- ggplot()+
   geom_sf(data=maritimes_network%>%filter(name!="Western/Emerald Banks Marine Refuge"),fill="grey90",alpha=0.5)+
   geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),fill="grey90",alpha=0.5,linewidth=1.2,col="black")+
@@ -109,8 +135,10 @@ p2 <- ggplot()+
   coord_sf(xlim=webca_box[c(1,3)],ylim=webca_box[c(2,4)])
 
 combo_plot <- p1 + inset_element(p2, left = 0.55, bottom = 0.05, right = 1, top = 0.5)
+combo_plot_fr <- p1_fr + inset_element(p2, left = 0.55, bottom = 0.05, right = 1, top = 0.5)
 
 ggsave("output/halibut_isdb_combo.png",combo_plot,height=5,width=5,units="in",dpi=600)
+ggsave("output/halibut_isdb_combo_fr.png",combo_plot_fr,height=5,width=5,units="in",dpi=600)
 
 
 
