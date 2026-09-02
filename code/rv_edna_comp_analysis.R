@@ -4,7 +4,6 @@
 library(sf)
 library(tidyverse)
 library(rnaturalearth)
-library(rnaturalearthhires)
 library(lubridate)
 library(MarConsNetData)
 library(vegan)
