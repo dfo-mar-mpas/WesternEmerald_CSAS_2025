@@ -130,8 +130,7 @@ ordered_species <- c(
 )
 
 ssip_network_sf <- ssip_network_sf %>%
-  mutate(species = factor(species, levels = ordered_species))%>%
-  data.frame()
+  mutate(species = factor(species, levels = ordered_species))
 
 ssip_sf <- ssip_sf %>%
   mutate(species = factor(species, levels = ordered_species))
@@ -180,14 +179,16 @@ ssip_network_haddock <- ssip_sf%>%
   dplyr::select(name,geometry)%>%
   group_by(name)%>%
   summarise(
-    geometry = st_union(geometry),
-    area = as.numeric(st_area(geometry))/1000000# Area in km²
+    geometry = st_union(geometry)
+  ) %>%
+  mutate(
+    area = as.numeric(st_area(geometry)) / 1000000
   )%>%
   ungroup()%>%
-  data.frame()%>%
+  #data.frame()%>%
   mutate(prop_area_total = round(area/haddock_area,3),
          prop_area_network = round(area/haddock_area_network,3))%>%
-  dplyr::select(-geometry)%>%
+  #dplyr::select(-geometry)%>%
   arrange(prop_area_total)%>%
   mutate(name = factor(name, levels=name),
          abbrev = case_when(name=="Western/Emerald Banks Marine Refuge" ~ "WEBMR",
@@ -196,14 +197,13 @@ ssip_network_haddock <- ssip_sf%>%
          abbrev = factor(abbrev,levels = abbrev))
 
 
-
-
 p2 <- ggplot()+
   geom_sf(data=bioregion,fill=NA)+
   geom_sf(data=basemap_atlantic)+
   geom_sf(data=ssip_sf%>%filter(species == "Haddock"),fill="coral2",alpha=0.3,col=NA)+
-  geom_sf(data=ssip_network_sf%>%filter(species == "Haddock"),fill="coral2")+
-  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5)+
+  geom_sf(data=ssip_network_haddock,fill="coral2")+
+  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5,col="grey50")+
+  geom_sf(data=maritimes_network%>%filter(name %in% setdiff(as.character(unique(ssip_network_haddock$name)),"Western/Emerald Banks Marine Refuge")),fill=NA,col="black")+
   geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="black")+
   theme_bw()+
   coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
@@ -226,11 +226,33 @@ p2_bar <- ggplot(ssip_network_haddock,aes(y=abbrev))+
           theme(axis.title = element_blank(),
                 legend.position = "none",
                 axis.text.y = element_text(size = rel(0.9)));p2_bar
+
+mar_space <- 0.01
           
-combo_haddock <- p2 + p2_bar + plot_layout(ncol=2, widths = c(0.7, 0.3),guides = 'collect') & theme(plot.margin = unit(c(0.05, 0.05, 0.05, 0.05), "lines"))
-                  # inset_element(p2_bar, 
-                  #               left = 0.65,   # Adjust these values to position the inset
-                  #               bottom = 0.05, 
-                  #               right = 0.95,  # Adjust these values to control size
-                  #               top = 0.3)
-ggsave("output/haddock_inset.png",combo_haddock,height=6,width=12,units="in",dpi=600)
+combo_haddock <- p2 + p2_bar + plot_layout(ncol=2, widths = c(0.7, 0.3),guides = 'collect') & theme(plot.margin = unit(c(mar_space, mar_space, mar_space, mar_space), "lines"))
+ 
+ggsave("output/haddock_inset.png",combo_haddock,height=6,width=10,units="in",dpi=600)
+
+#now with french translation
+ssip_network_haddock_fr <- ssip_network_haddock%>%
+                           mutate(abbrev_fr=case_when(abbrev == "Sable Island Bank" ~ "banc de l’île de Sable",
+                                                    abbrev == "Georges Bank"~"banc de Georges",
+                                                    abbrev == "Scotian Gulf" ~ "golfe Scotian",
+                                  TRUE ~ abbrev),
+                                  abbrev_fr=factor(abbrev_fr,levels=abbrev_fr))
+
+
+p2_bar_fr <- ggplot(ssip_network_haddock_fr,aes(y=abbrev_fr))+
+  geom_bar(stat="identity",aes(x=prop_area_total,fill=prop_area_total),col="black")+
+  theme_bw()+
+  scale_x_continuous(labels = percent, expand = c(0, 0.005))+ 
+  scale_fill_viridis_b(labels = percent,n.breaks=5,option="D")+
+  theme(axis.title = element_blank(),
+        legend.position = "none",
+        axis.text.y = element_text(size = rel(0.9)));p2_bar_fr
+
+mar_space <- 0.01
+
+combo_haddock_fr <- p2 + p2_bar_fr + plot_layout(ncol=2, widths = c(0.7, 0.3),guides = 'collect') & theme(plot.margin = unit(c(mar_space, mar_space, mar_space, mar_space), "lines"))
+
+ggsave("output/haddock_inset_fr.png",combo_haddock_fr,height=6,width=10,units="in",dpi=600)
