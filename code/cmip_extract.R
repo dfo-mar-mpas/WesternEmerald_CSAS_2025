@@ -130,6 +130,8 @@ for (i in emmission_scenarios) {
   gc()
 }
 
+
+
 ## ---- STEP 2: per-model extraction ----
 message("Running the climate-model based extractions.")
 
