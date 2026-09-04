@@ -10,7 +10,6 @@ library(ggspatial)
 library(terra)
 library(tidyterra)
 library(rasterVis)
-library(basemaps)
 library(viridis)
 library(scales)
 library(patchwork)
@@ -19,7 +18,6 @@ library(patchwork)
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
 utmkm <- "+proj=utm +zone=20 +datum=NAD83 +units=km +no_defs +ellps=GRS80 +towgs84=0,0,0"
 CanProj <- "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=63.390675 +lon_0=-91.86666666666666 +x_0=6200000 +y_0=3000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-
 
 #Basemaps
 bioregion <- data_planning_areas()%>%
@@ -60,9 +58,26 @@ basemap_atlantic <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
   st_transform(CanProj)
 
 #load bioclassification 
+
+lab_df <- data.frame(cl=1:6,
+                     name=c("Slope","Laurentian Channel/Shelf Break","ESS",
+                            "ESS:Banks","WSS/Outer BoF","WSS:Banks/Inner BoF"),
+                     name_fr=c(
+                       "Pente",
+                       "Chenal Laurentien/Rupture de plateau",
+                       "PNEO",
+                       "PNEO : Bancs",
+                       "PNEOcc/Exterieur BdF",
+                       "PNEOcc : Bancs/Interieur BdF"
+                     )
+                    )
+
 bioclass <- read_sf("data/Shapefiles/bioclassification_clusters.shp")%>%
             filter(region=="Maritimes")%>%
-            st_transform(CanProj)
+            st_transform(CanProj)%>%
+            left_join(lab_df)%>%
+            mutate(name=factor(name,levels=name),
+                   name_fr=factor(name_fr,levels=name_fr))
 
 webca_box <- maritimes_network%>%
              filter(name=="Western/Emerald Banks Marine Refuge")%>%
@@ -73,18 +88,36 @@ webca_box <- maritimes_network%>%
 
 webca_box_poly <- webca_box%>%st_as_sfc()
 
+target_order <- lab_df$name[c(2, 3, 4, 1, 5, 6)] #for the legend
+target_order_fr <- lab_df$name_fr[c(2, 3, 4, 1, 5, 6)] #for the legend
+
 p1 <- ggplot()+
       geom_sf(data=bioregion,fill=NA)+
-      geom_sf(data=bioclass,aes(fill=factor(cl)))+
+      geom_sf(data=bioclass,aes(fill=name))+
       geom_sf(data=basemap_atlantic)+
       geom_sf(data=maritimes_network,fill=NA)+
       geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="black")+
       geom_sf(data=webca_box_poly,lty=2,lwd=0.5,fill=NA)+    
       theme_bw()+
       theme(axis.title = element_blank(),
-            legend.position = "none")+
+            legend.title = element_blank())+
+  scale_fill_discrete(breaks = target_order)+
       coord_sf(xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
       annotation_scale()
+
+p1_fr <- ggplot()+
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=bioclass,aes(fill=name_fr))+
+  geom_sf(data=basemap_atlantic)+
+  geom_sf(data=maritimes_network,fill=NA)+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="black")+
+  geom_sf(data=webca_box_poly,lty=2,lwd=0.5,fill=NA)+    
+  theme_bw()+
+  theme(axis.title = element_blank(),
+        legend.title = element_blank())+
+  scale_fill_discrete(breaks = target_order_fr)+
+  coord_sf(xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
+  annotation_scale()
 
 p2 <- ggplot()+
       geom_sf(data=bioclass,aes(fill=factor(cl)))+
@@ -98,6 +131,10 @@ p2 <- ggplot()+
             plot.margin = unit(c(0, 0, 0, 0), "lines"))+
       coord_sf(xlim=webca_box[c(1,3)],ylim=webca_box[c(2,4)])
 
+#combination plots
 combo_plot <- p1 + inset_element(p2, left = 0.55, bottom = 0.05, right = 1, top = 0.5)
+combo_plot_fr <- p1_fr + inset_element(p2, left = 0.55, bottom = 0.05, right = 1, top = 0.5)
 
-ggsave("output/webca_bioclass_combo.png",combo_plot,height=5,width=5,units="in",dpi=600)
+#save plots
+ggsave("output/Fig15b.png",combo_plot,height=5,width=7,units="in",dpi=600)
+ggsave("output/Fig15b_fr.png",combo_plot_fr,height=5,width=7.5,units="in",dpi=600)
