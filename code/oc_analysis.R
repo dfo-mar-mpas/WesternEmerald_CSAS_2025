@@ -9,7 +9,6 @@ library(ggspatial)
 library(terra)
 library(tidyterra)
 library(rasterVis)
-library(basemaps)
 library(viridis)
 library(scales)
 library(patchwork)
@@ -78,37 +77,7 @@ basemap_atlantic <- rbind(ne_states(country = "Canada",returnclass = "sf")%>%
                             mutate(country="USA"))%>%
                       st_transform(CanProj)
 
-#make map
 
-rast_min <- min(values(oc_rast_mask), na.rm=TRUE)
-rast_max <- max(values(oc_rast_mask), na.rm=TRUE)
-
-p1 <- ggplot()+
-  geom_sf(data=bioregion,fill=NA)+
-  geom_sf(data=basemap_atlantic)+
-  geom_spatraster(data=oc_rast_mask)+
-  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5)+
-  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="grey75")+
-  #geom_sf(data=bc_areas,fill="red")+
-  theme_bw()+
-  coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
-  scale_fill_viridis_c(
-    na.value = "transparent",
-    n.breaks = 10,  # Creates 10 color breaks
-    breaks = scales::breaks_extended(n = 4)(values(oc_rast_mask)),  # Shows 4 labels
-    labels = function(x) round(x, 1)  # Rounds labels to 1 decimal
-  )+
-  annotation_scale()+
-  labs(fill=expression("OC Density (kg/m"^3*")"))+
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(0.98, 0.03),  # Position (0,0 is bottom left, 1,1 is top right)
-    legend.justification = c(1, 0),    # Anchor point of legend box
-    legend.text = element_text(size = rel(0.7)),  # Reduce text size by 30%
-    legend.title = element_text(size = rel(0.7)),# Also reduce title size to match
-    legend.background = element_blank(),
-    legend.title.align = 0.5
-  )
 
 ggsave("output/WEBMR_OC.png",p1,width=6,height=6,units="in",dpi=300)
 
@@ -151,10 +120,32 @@ for (i in 1:nrow(maritimes_network)) {
 }
 
 plot_oc <- maritimes_oc%>%
-           arrange(prop_oc)%>%
-           mutate(name_oc = factor(site,levels=site))
+           arrange(prop_oc)
 
-p2 <- ggplot(plot_oc%>%filter(prop_oc>0.005),aes(x=prop_oc,y=name_oc,fill=prop_oc))+
+#trimmed and translated
+plot_dat <- plot_oc%>%
+            filter(prop_oc>0.005)%>% #half percent cut off
+            mutate(
+              name_oc_fr = case_when(
+                trimws(site) == "Gully Marine Protected Area"          ~ "Zone de protection marine du Gully",
+                trimws(site) == "Logan Canyon"                         ~ "Canyon Logan",
+                trimws(site) == "Scotian Gulf"                         ~ "Golfe de la Nouvelle-Écosse",
+                trimws(site) == "Eastern Shore Islands"                ~ "Îles de la côte est",
+                trimws(site) == "Misaine Bank and Laurentian Channel"  ~ "Banc Misaine et chenal Laurentien",
+                trimws(site) == "Central Scotian Slope, Rise and Abyss" ~ "Pente, glacis et abysse du plateau néo-écossais central",
+                trimws(site) == "Fundian Channel-Browns Bank"          ~ "Chenal de Fundy - Banc de Brown",
+                trimws(site) == "Canso Bank and Channels"              ~ "Banc et chenaux de Canso",
+                trimws(site) == "Eastern Canyons Marine Refuge"       ~ "Refuge marin des Canyons-de-l'Est",
+                trimws(site) == "St. Anns Bank Marine Protected Area"  ~ "Zone de protection marine du banc de Sainte-Anne",
+                trimws(site) == "Pemsɨk"                               ~ "Pemsɨk", # Indigenous name retained
+                trimws(site) == "Western/Emerald Banks Marine Refuge" ~ "Refuge marin du banc Emerald et du banc Western",
+                TRUE ~ as.character(site) # Keeps any unmatched values as-is
+              ),
+              name_oc = factor(site,levels=site),
+              name_oc_fr = factor(name_oc_fr,levels=name_oc_fr))
+
+              
+p2 <- ggplot(plot_dat,aes(x=prop_oc,y=name_oc,fill=prop_oc))+
       geom_bar(stat="identity",col="black")+
   geom_text(aes(label = scales::percent(prop_oc, accuracy = 0.1)), 
             hjust = 1.1,  # Position text slightly outside the bar
@@ -169,8 +160,89 @@ p2 <- ggplot(plot_oc%>%filter(prop_oc>0.005),aes(x=prop_oc,y=name_oc,fill=prop_o
             legend.position.inside = c(0.9,0.2),
             legend.background = element_blank());p2
 
-ggsave("output/OC_analysis.png",p2,width=6,height=6,units="in",dpi=300)
+p2_fr <- ggplot(plot_dat,aes(x=prop_oc,y=name_oc_fr,fill=prop_oc))+
+        geom_bar(stat="identity",col="black")+
+        geom_text(aes(label = scales::percent(prop_oc, accuracy = 0.1)), 
+                  hjust = 1.1,  # Position text slightly outside the bar
+                  size = 3.5) +
+        theme_bw()+
+        scale_x_continuous(labels = percent, expand = c(0, 0.001))+ 
+        #scale_fill_viridis_b(labels = percent,n.breaks=5,option="D")+
+        scale_fill_distiller(palette = "Blues", direction = 1,labels=percent) +  # Blue gradient
+        
+        labs(y="",x="Couverture proportionnelle du CO régional total",fill="")+
+        theme(legend.position = "inside",
+              legend.position.inside = c(0.9,0.2),
+              legend.background = element_blank());p2_fr
 
+#make maps and highlight sites 
+
+rast_min <- min(values(oc_rast_mask), na.rm=TRUE)
+rast_max <- max(values(oc_rast_mask), na.rm=TRUE)
+
+p1 <- ggplot()+
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=basemap_atlantic)+
+  geom_spatraster(data=oc_rast_mask)+
+  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5)+
+  geom_sf(data=maritimes_network%>%filter(name %in% plot_dat$name_oc),linewidth=0.6,fill=NA,col="grey75")+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.2,fill=NA,col="grey75")+
+  theme_bw()+
+  coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
+  scale_fill_viridis_c(
+    na.value = "transparent",
+    n.breaks = 10,  # Creates 10 color breaks
+    breaks = scales::breaks_extended(n = 4)(values(oc_rast_mask)),  # Shows 4 labels
+    labels = function(x) round(x, 1)  # Rounds labels to 1 decimal
+  )+
+  annotation_scale()+
+  labs(fill=expression("OC Density (kg/m"^3*")"))+
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.98, 0.03),  # Position (0,0 is bottom left, 1,1 is top right)
+    legend.justification = c(1, 0),    # Anchor point of legend box
+    legend.text = element_text(size = rel(0.7)),  # Reduce text size by 30%
+    legend.title = element_text(size = rel(0.7)),# Also reduce title size to match
+    legend.background = element_blank(),
+    legend.title.align = 0.5
+  )
+
+p1_fr <- ggplot()+
+  geom_sf(data=bioregion,fill=NA)+
+  geom_sf(data=basemap_atlantic)+
+  geom_spatraster(data=oc_rast_mask)+
+  geom_sf(data=maritimes_network,fill=NA,linewidth=0.5)+
+  geom_sf(data=maritimes_network%>%filter(name %in% plot_dat$name_oc),linewidth=0.6,fill=NA,col="grey75")+
+  geom_sf(data=maritimes_network%>%filter(name=="Western/Emerald Banks Marine Refuge"),linewidth=1.25,fill=NA,col="grey75")+
+  #geom_sf(data=bc_areas,fill="red")+
+  theme_bw()+
+  coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
+  scale_fill_viridis_c(
+    na.value = "transparent",
+    n.breaks = 10,  # Creates 10 color breaks
+    breaks = scales::breaks_extended(n = 4)(values(oc_rast_mask)),  # Shows 4 labels
+    labels = function(x) round(x, 1)  # Rounds labels to 1 decimal
+  )+
+  annotation_scale()+
+  labs(fill = expression("Densité de CO (kg/m"^3*")"))+
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.98, 0.03),  # Position (0,0 is bottom left, 1,1 is top right)
+    legend.justification = c(1, 0),    # Anchor point of legend box
+    legend.text = element_text(size = rel(0.7)),  # Reduce text size by 30%
+    legend.title = element_text(size = rel(0.7)),# Also reduce title size to match
+    legend.background = element_blank(),
+    legend.title.align = 0.5
+  )
+
+ 
+
+#combination plots
+p_combo <- p1 + p2 + plot_layout(ncol=2)
+p_combo_fr <- p1_fr + p2_fr+ plot_layout(ncol=2)
+
+ggsave("output/Fig14.png",p_combo,height=6,width=12,units="in",dpi=600)
+ggsave("output/Fig14_fr.png",p_combo_fr,height=6,width=12,units="in",dpi=600)
 
 #High carbon zone plot
 p3 <- ggplot()+
@@ -182,13 +254,6 @@ p3 <- ggplot()+
   theme_bw()+
   coord_sf(expand=0,xlim=plotlims[c(1,3)],ylim=plotlims[c(2,4)])+
   annotation_scale()
- 
-
-#combination plot
-
-p_combo <- p1 + p2 + plot_layout(ncol=2)
-
-ggsave("output/oc_combo.png",p_combo,height=6,width=12,units="in",dpi=600)
 
 #now plot the key carbon areas within webca
 
