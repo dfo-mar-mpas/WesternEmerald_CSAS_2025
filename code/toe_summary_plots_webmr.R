@@ -8,8 +8,6 @@ library(scales)
 library(patchwork)
 library(ggspatial)
 library(viridis)
-library(ggimage)
-library(rphylopic)
 
 sf_use_s2(FALSE)
 
@@ -17,17 +15,9 @@ sf_use_s2(FALSE)
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
 
 #focal species
+focal_sp_df <- data.frame(species=c("Melanogrammus aeglefinus","Gadus morhua",
+                                    "Hippoglossoides platessoides","Leucoraja ocellata"))
 
-focal_sp <- c("Melanogrammus aeglefinus","Gadus morhua","Hippoglossoides platessoides","Leucoraja ocellata")
-
-
-focal_sp_df <- NULL
-for(i in focal_sp){
-  
-  focal_sp_df  <- rbind(focal_sp_df,data.frame(species=i,uuid = get_uuid(i))) #playing with phylopic
-  
-  
-}
 
 #load the time of emergence summaries
 load("c:/Users/stanleyr/Documents/Github/MAR_thermal_emerg/output/toe_summaries/all_toe_summaries.RData")
@@ -145,4 +135,55 @@ webca_loss <- ggplot(habitat_loss_site, aes(x = ToE, y = cum_sum, color = mod,li
                 fill = guide_legend(override.aes = list(size = 5, shape = 21, stroke = 1))
               )
 
-ggsave("output/webca_focal_habitat_loss.png",webca_loss,height=7.1,width=8,units="in",dpi=600)
+webca_loss_fr <- ggplot(habitat_loss_site, aes(x = ToE, y = cum_sum, color = mod,linetype = mod)) +
+                geom_line(linewidth = 1,show.legend = FALSE) +
+                geom_point(shape=21,aes(fill=mod),col="black",size=2.1, alpha = 0.6) +
+                facet_grid(species~climate_proj_fact) +
+                scale_linetype_manual(values = c("AWI" = "dashed", "IPSL" = "dashed", "HAD" = "dashed", "Ensemble" = "solid")) +
+                scale_color_manual(values = c("AWI" = "coral2", "IPSL" = "aquamarine4", "HAD" = "cornflowerblue", "Ensemble" = "black")) +
+                scale_fill_manual(values = c("AWI" = "coral2", "IPSL" = "aquamarine4", "HAD" = "cornflowerblue", "Ensemble" = "black")) +
+                theme_bw() +
+                labs( #translated
+                  x = "Moment d'émergence (ToE)",
+                  y = "% d'étendue de l'habitat perdu",
+                  fill = "Modèle climatique"
+                ) +
+                theme(
+                  legend.position = "bottom",
+                  panel.grid.minor.y = element_blank(),
+                  strip.background = element_rect(fill="white"),
+                  strip.text.y = element_text(size = rel(0.7)),
+                  panel.grid.minor.x = element_line(color = "lightgrey", linetype = "dashed")
+                ) +
+                scale_size_continuous(range = c(1, 5)) +
+                scale_x_continuous(
+                  limits = c(2015, 2100),
+                  breaks = seq(2020, 2100, by = 10)
+                ) +
+                scale_y_continuous(labels=percent)+
+                # Add horizontal line at 1 to show complete habitat loss
+                geom_hline(yintercept = 0.5, linetype = "dashed", color = "red", alpha = 0.5)+
+                guides(
+                  color = guide_legend(override.aes = list(size = 5, shape = 21, stroke = 1)),
+                  linetype = "none",  # Hide linetype legend
+                  fill = guide_legend(override.aes = list(size = 5, shape = 21, stroke = 1))
+                )
+
+#save and match to res doc
+ggsave("output/Fig13_eng.jpg",webca_loss_fr,height=7.1,width=8,units="in",dpi=600)
+ggsave("output/Fig13_fr.jpg",webca_loss_fr,height=7.1,width=8,units="in",dpi=600)
+
+
+#Extra code ----
+#focal species
+    # library(rphylopic)
+    # library(ggimage)
+    # focal_sp <- c("Melanogrammus aeglefinus","Gadus morhua","Hippoglossoides platessoides","Leucoraja ocellata")
+    # 
+    # 
+    # focal_sp_df <- NULL
+    # for(i in focal_sp){
+    #   
+    #   focal_sp_df  <- rbind(focal_sp_df,data.frame(species=i,uuid = get_uuid(i))) #playing with phylopic
+    #   
+    # }
